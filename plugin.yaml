@@ -1,0 +1,10 @@
+name: 简单的插件
+# uuid无格式要求，确保唯一即可
+uuid: 00000000-0000-0000-0000-000000000000
+description: 如名，这是一个简单的插件，且不具有任何实际功能，仅作为如何制作一个插件的教程
+authors:
+  - muzi
+version: 1.0.0
+icon: icon.webp
+docs: README.md
+
