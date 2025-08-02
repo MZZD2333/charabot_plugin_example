@@ -1,24 +1,24 @@
-from chara.core import PLUGINS
+from chara.core.hazard import PLUGINS
 from chara.lib.commandparse import CommandParser
 from chara.onebot.events import GroupMessageEvent,  PrivateMessageEvent
 from chara.plugin import command_trigger, regex_trigger
 from chara.plugin import Handler, CommandTriggerCapturedData, RegexTriggerCapturedData
 from chara.plugin import Bot
 from chara.plugin import SU, Frequency
-from chara.plugin import current_plugin
+from chara.plugin import get_current_plugin
 
 
 trigger_1 = regex_trigger(r'插件\s*(?P<index>\d+)', priority=0, block=True)
 trigger_2 = regex_trigger(r'插件', priority=1) # 不会被触发
 
 @trigger_1.handle(condition=Frequency(3, 10)) # 条件也可对handler使用
-async def _(handler: Handler, bot: Bot, event: GroupMessageEvent, tcd: RegexTriggerCapturedData): # 不必使用所有参数
+async def _(handler: Handler, bot: Bot, event: GroupMessageEvent, tcd: RegexTriggerCapturedData) -> None: # 不必使用所有参数
     data = tcd.matched.groupdict()
     index = int(data['index'])
     if index > len(PLUGINS):
         await handler.done('插件序号过大') 
     
-    plugin = list(PLUGINS.values())[index]
+    plugin = list(PLUGINS.values())[index-1]
     await handler.send(plugin.metadata.description)
 
 # 多个handler会依次执行
@@ -50,7 +50,7 @@ async def _():
     print('不会发生')
     
 
-plugin = current_plugin()
+plugin = get_current_plugin()
 
 @plugin.on_load()
 async def _():
